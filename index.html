@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amanda — Fullstack Developer</title>
+<style>
+  :root{
+    --bg: #0a0e1a;
+    --bg-soft: #0e1322;
+    --panel: #131a2c;
+    --panel-2: #161e33;
+    --line: #232c45;
+    --text: #eef2f9;
+    --text-dim: #8e96ad;
+    --accent: #5b7cff;
+    --accent-soft: #2b3a66;
+    --pop: #ff6b6b;
+    --mint: #2ee6b8;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background: var(--accent); color:#fff; }
+
+  .glow{
+    position:absolute;
+    border-radius:50%;
+    filter: blur(80px);
+    opacity:.35;
+    pointer-events:none;
+    z-index:0;
+  }
+  .glow-blue{ background: var(--accent); width:420px; height:420px; }
+  .glow-coral{ background: var(--pop); width:300px; height:300px; }
+  .glow-mint{ background: var(--mint); width:260px; height:260px; }
+
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 22px 6%;
+    position: sticky;
+    top:0;
+    z-index: 100;
+    background: rgba(10,14,26,.7);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .logo{ font-family: var(--display); font-weight:700; font-size:18px; letter-spacing:.5px; }
+  .logo span{ color: var(--accent); }
+  .nav-links{ display:flex; gap:32px; font-size:14px; color: var(--text-dim); }
+  .nav-links a:hover{ color: var(--text); }
+  .nav-cta{
+    font-size:13px;
+    font-weight:600;
+    background: var(--accent);
+    color:#fff;
+    padding:10px 22px;
+    border-radius:100px;
+    box-shadow: 0 0 24px -4px var(--accent);
+  }
+  @media (max-width:760px){ .nav-links{ display:none; } }
+
+  .hero{
+    position:relative;
+    padding: 90px 6% 110px;
+    display:grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 50px;
+    align-items:center;
+    max-width:1280px;
+    margin:0 auto;
+    overflow:visible;
+  }
+  @media (max-width: 860px){ .hero{ grid-template-columns:1fr; padding-top:60px; } }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color: var(--mint);
+    background: rgba(46,230,184,.08);
+    border:1px solid rgba(46,230,184,.25);
+    padding:6px 14px;
+    border-radius:100px;
+    margin-bottom:24px;
+  }
+  .eyebrow .pulse{
+    width:7px; height:7px; border-radius:50%; background: var(--mint);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(46,230,184,.6); }
+    70%{ box-shadow:0 0 0 8px rgba(46,230,184,0); }
+    100%{ box-shadow:0 0 0 0 rgba(46,230,184,0); }
+  }
+
+  .hero h1{
+    font-family: var(--display);
+    font-weight:700;
+    font-size: clamp(36px, 5.2vw, 64px);
+    line-height:1.08;
+    margin-bottom: 18px;
+  }
+  .hero h1 .grad{
+    background: linear-gradient(90deg, var(--accent), var(--mint));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero p.lead{
+    color: var(--text-dim);
+    font-size:16px;
+    max-width: 480px;
+    margin-bottom: 34px;
+  }
+
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom: 44px; }
+  .btn{
+    font-size:14px;
+    font-weight:600;
+    padding: 13px 26px;
+    border-radius: 100px;
+    transition: all .2s;
+    display:inline-block;
+  }
+  .btn.solid{ background: var(--accent); color:#fff; box-shadow: 0 0 30px -6px var(--accent); }
+  .btn.solid:hover{ transform: translateY(-2px); }
+  .btn.outline{ border:1px solid var(--line); color: var(--text); }
+  .btn.outline:hover{ border-color: var(--accent); color: var(--accent); }
+
+  .stat-row{ display:flex; gap: 36px; flex-wrap:wrap; }
+  .stat b{ display:block; font-family: var(--display); font-size:26px; color: var(--text); }
+  .stat span{ font-size:12px; color: var(--text-dim); }
+
+  .avatar-wrap{ position:relative; display:flex; justify-content:center; }
+  .ring{ position:absolute; border-radius:50%; border: 1px solid var(--line); }
+  .ring.r1{ width:340px; height:340px; }
+  .ring.r2{ width:390px; height:390px; border-style:dashed; opacity:.5; animation: spin 30s linear infinite; }
+  @keyframes spin{ from{ transform:rotate(0); } to{ transform:rotate(360deg); } }
+
+  .avatar{
+    width: 280px; height: 280px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--panel-2), var(--bg-soft));
+    border: 2px solid var(--accent-soft);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--display); font-size: 64px; font-weight:700; color: var(--accent);
+    position:relative; z-index:2;
+    box-shadow: 0 0 60px -10px var(--accent);
+  }
+  .status-badge{
+    position:absolute; bottom: 18px; right: calc(50% - 150px);
+    background: var(--panel); border:1px solid var(--line); border-radius: 100px;
+    padding: 8px 16px 8px 10px; display:flex; align-items:center; gap:8px; font-size:12px;
+    z-index:3; box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .status-badge .pulse{ width:7px; height:7px; border-radius:50%; background: var(--mint); }
+
+  section{ max-width: 1180px; margin: 0 auto; padding: 80px 6%; position:relative; }
+  .tag{ font-size:13px; color: var(--accent); font-weight:600; letter-spacing:.5px; text-transform:uppercase; margin-bottom:10px; }
+  .sec-title{ font-family: var(--display); font-weight:700; font-size: clamp(26px,3.4vw,38px); margin-bottom: 44px; }
+
+  .about-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items:start; }
+  @media (max-width:780px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-text p{ color: var(--text-dim); margin-bottom:16px; font-size:15px; }
+  .about-text strong{ color: var(--text); }
+
+  .info-cards{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .info-card{ background: var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px; }
+  .info-card .label{ font-size:11px; color: var(--text-dim); text-transform:uppercase; margin-bottom:6px; }
+  .info-card .value{ font-family: var(--display); font-weight:600; font-size:15px; }
+
+  .skill-row{ display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+  .skill-card{
+    background: linear-gradient(160deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line); border-radius:16px; padding:26px;
+    transition: transform .2s, border-color .2s;
+  }
+  .skill-card:hover{ transform: translateY(-4px); border-color: var(--accent-soft); }
+  .skill-card .icon{
+    width:42px; height:42px; border-radius:12px;
+    background: rgba(91,124,255,.12);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px; font-size:18px;
+  }
+  .skill-card h4{ font-size:16px; margin-bottom:8px; }
+  .skill-card p{ font-size:13px; color: var(--text-dim); }
+
+  .proj-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:22px; }
+  .proj-card{
+    background: var(--panel); border:1px solid var(--line); border-radius:18px;
+    overflow:hidden; transition: transform .25s, border-color .25s;
+  }
+  .proj-card:hover{ transform: translateY(-6px); border-color: var(--accent-soft); }
+  .proj-thumb{
+    height: 160px;
+    background: linear-gradient(135deg, var(--accent-soft), var(--bg-soft));
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--display); color: var(--text-dim); font-size:13px; position:relative;
+  }
+  .proj-thumb::after{
+    content:""; position:absolute; inset:0;
+    background: radial-gradient(circle at 30% 20%, rgba(91,124,255,.25), transparent 60%);
+  }
+  .proj-body{ padding:22px; }
+  .proj-body .ptag{ font-size:11px; color: var(--mint); margin-bottom:8px; text-transform:uppercase; letter-spacing:.5px; }
+  .proj-body h4{ font-size:17px; margin-bottom:8px; }
+  .proj-body p{ font-size:13px; color: var(--text-dim); margin-bottom:14px; }
+  .proj-stack{ display:flex; gap:8px; flex-wrap:wrap; }
+  .proj-stack span{
+    font-size:11px; background: var(--bg-soft); border:1px solid var(--line);
+    border-radius:100px; padding:4px 12px; color: var(--text-dim);
+  }
+  .proj-link{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:13px; font-weight:600; color: var(--accent);
+    margin-top:16px;
+    transition: gap .2s, color .2s;
+  }
+  .proj-link:hover{ gap:10px; color: var(--mint); }
+
+  /* ---------- experience (no-link projects) ---------- */
+  .exp-list{ display:flex; flex-direction:column; }
+  .exp-item{
+    display:grid;
+    grid-template-columns: 140px 1fr;
+    gap: 24px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .exp-item:last-child{ border-bottom:none; }
+  @media (max-width:640px){ .exp-item{ grid-template-columns:1fr; gap:8px; } }
+  .exp-period{ font-size:13px; color: var(--text-dim); font-family: var(--display); }
+  .exp-main h4{ font-size:16px; margin-bottom:6px; }
+  .exp-main .exp-role{ font-size:12px; color: var(--mint); text-transform:uppercase; letter-spacing:.4px; margin-bottom:10px; display:inline-block; }
+  .exp-main p{ font-size:14px; color: var(--text-dim); margin-bottom:12px; }
+  .exp-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11px; color: var(--text-dim);
+    background: var(--bg-soft); border:1px solid var(--line);
+    border-radius:100px; padding:4px 12px; margin-bottom:10px;
+  }
+  .exp-badge::before{ content:"●"; font-size:8px; color: var(--text-dim); }
+  .exp-main .exp-company{ font-size:13px; color: var(--text); font-weight:600; }
+
+  .contact-panel{
+    background: linear-gradient(135deg, var(--panel-2), var(--panel));
+    border:1px solid var(--line); border-radius: 24px; padding: 60px 40px;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .contact-panel h3{ font-family: var(--display); font-size: clamp(24px,3vw,34px); margin-bottom:14px; }
+  .contact-panel p{ color: var(--text-dim); margin-bottom:30px; }
+  .contact-links{ display:flex; justify-content:center; gap:14px; flex-wrap:wrap; }
+
+  footer{ text-align:center; padding:30px; font-size:12px; color: var(--text-dim); border-top:1px solid var(--line); }
+
+  @media (prefers-reduced-motion: reduce){
+    .ring.r2{ animation:none; }
+    .eyebrow .pulse{ animation:none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Amanda<span>.dev</span></div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#work">Pengalaman Kerja</a>
+    <a href="#skills">Skills</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#experience">Pengalaman</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+</nav>
+
+<div class="hero">
+  <div class="glow glow-blue" style="top:-60px; left:-100px;"></div>
+  <div class="glow glow-coral" style="top:200px; right:60px;"></div>
+
+  <div class="hero-text" style="position:relative; z-index:1;">
+    <div class="eyebrow"><span class="pulse"></span> Available for new projects</div>
+    <h1>Hai, saya <span class="grad">Amanda</span>Fullstack Developer yang berfokus pada pengembangan aplikasi web yang fungsional, modern, dan berorientasi pada pengalaman pengguna.</h1>
+    <p class="lead">Full-stack Developer yang berfokus pada pengalaman pengguna dan pengembangan kode yang berkualitas. Tertarik pada proyek-proyek yang menantang dan selalu antusias mempelajari teknologi baru.</p>
+    <div class="stat-row">
+      <div class="stat"><b>1+</b><span>Tahun Pengalaman</span></div>
+      <div class="stat"><b>10+</b><span>Project Selesai</span></div>
+    </div>
+  </div>
+
+  <div class="avatar-wrap" style="position:relative; z-index:1;">
+    <div class="ring r2"></div>
+    <div class="ring r1"></div>
+    <div class="avatar">
+      <img src="foto.jpg" alt="Foto Profil" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+    </div>
+    <div class="status-badge"><span class="pulse"></span> Open to work</div>
+  </div>
+</div>
+
+<section id="about">
+  <div class="tag">// 01</div>
+  <h2 class="sec-title">Tentang Saya</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Halo! Saya <strong>Amanda</strong>, seorang developer yang senang mengubah ide menjadi produk digital yang bermanfaat dan mudah digunakan. Saya merupakan lulusan Informatika dari Universitas Atma Jaya Yogyakarta dengan pengalaman sebagai Fullstack Developer di lingkungan kerja profesional.</p>
+      <p>Saya terbiasa membangun aplikasi dari sisi frontend hingga backend menggunakan teknologi seperti Laravel, React.js, NestJS, dan Nuxt.js. Selain itu, saya juga memiliki kemampuan dalam HTML, CSS, Python, dan Java untuk mengembangkan berbagai kebutuhan sistem.</p>
+      <p>Selama perjalanan saya di dunia pengembangan perangkat lunak, saya pernah mengembangkan aplikasi mobile berbasis Flutter yang terintegrasi dengan QR Code, serta berbagai aplikasi web yang membantu menyelesaikan kebutuhan pengguna secara nyata.</p>
+      <p>Saya percaya bahwa kode yang baik bukan hanya berjalan dengan benar, tetapi juga mudah dipahami dan dikembangkan oleh tim. Bagi saya, desain yang baik adalah desain yang intuitif, sehingga pengguna dapat menggunakannya tanpa perlu banyak penjelasan. Di luar dunia coding, saya juga senang memasak dan terus mengeksplorasi hal-hal baru di bidang teknologi.</p>
+    </div>
+    <div class="info-cards">
+      <div class="info-card"><div class="label">Lokasi</div><div class="value">Yogyakarta, Indonesia</div></div>
+      <div class="info-card"><div class="label">Status</div><div class="value">Open to work</div></div>
+      <div class="info-card"><div class="label">Fokus</div><div class="value">Full-Stack Developer</div></div>
+      <div class="info-card"><div class="label">Pengalaman</div><div class="value">X1Tahun</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="tag">// 02</div>
+  <h2 class="sec-title">Keahlian Saya</h2>
+  <div class="skill-row">
+    <div class="skill-card">
+      <div class="icon">🎨</div>
+      <h4>Frontend Development</h4>
+      <p>HTML | CSS | JavaScript | React.js | Nuxt.js</p>
+    </div>
+    <div class="skill-card">
+      <div class="icon">⚙️</div>
+      <h4>Backend Development</h4>
+      <p>Laravel | NestJS | Express.js | Java | Python | C</p>
+    </div>
+    <div class="skill-card">
+        <div class="icon">📱</div>
+        <h4>Mobile Development</h4>
+        <p>Flutter</p>
+    </div>
+
+    <div class="skill-card">
+        <div class="icon">🗄️</div>
+        <h4>Database</h4>
+        <p>MySQL | PostgreSQL</p>
+    </div>
+
+    <div class="skill-card">
+        <div class="icon">🎯</div>
+        <h4>UI/UX Design</h4>
+        <p>Figma</p>
+    </div>
+
+    <div class="skill-card">
+        <div class="icon">🔌</div>
+        <h4>IoT</h4>
+        <p>Arduino</p>
+    </div>
+
+    <div class="skill-card">
+        <div class="icon">🛠️</div>
+        <h4>Tools</h4>
+        <p>Microsoft Office</p>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="tag">// 03</div>
+  <h2 class="sec-title">Pengalaman Kerja</h2>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-period">Okt 2025</div>
+      <div class="exp-main">
+        <span class="exp-company">PT Bentang Inspira Teknologi</span>
+        <h4>Full-Stack Developer</h4>
+        <p>• Mengembangkan fitur pada sistem informasi rumah sakit (SIMRS) untuk klien menggunakan NestJS (backend) dan Nuxt.js (frontend)</p>
+        <p>• Merancang dan mengelola struktur database sesuai kebutuhan modul yang ditugaskan</p>
+        <p>• Mengimplementasikan API backend serta melakukan pengujian menggunakan Postman</p>
+        <p>• Mengembangkan tampilan frontend dan memastikan integrasi dengan backend berjalan dengan baik</p>
+        <p>• Berkolaborasi dengan tim dalam proses pengembangan dan penyelesaian fitur</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="portfolio">
+  <div class="tag">// 04</div>
+  <h2 class="sec-title">Portofolio</h2>
+  <div class="proj-grid">
+    <div class="proj-card">
+      <div class="proj-thumb">Preview Project 1</div>
+      <div class="proj-body">
+        <div class="ptag">Production</div>
+        <h4>Nama Project 1</h4>
+        <p>Deskripsi singkat: masalah apa yang diselesaikan dan dampaknya.</p>
+        <div class="proj-stack"><span>React</span><span>Node.js</span><span>MongoDB</span></div>
+        <a href="https://link-project-1.com" class="proj-link" target="_blank" rel="noopener">Lihat Project →</a>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-thumb">Preview Project 2</div>
+      <div class="proj-body">
+        <div class="ptag">Side Project</div>
+        <h4>Nama Project 2</h4>
+        <p>Deskripsi singkat project kedua kamu di sini.</p>
+        <div class="proj-stack"><span>Next.js</span><span>Tailwind</span></div>
+        <a href="https://link-project-2.com" class="proj-link" target="_blank" rel="noopener">Lihat Project →</a>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-thumb">Preview Project 3</div>
+      <div class="proj-body">
+        <div class="ptag">Open Source</div>
+        <h4>Nama Project 3</h4>
+        <p>Deskripsi singkat project ketiga kamu di sini.</p>
+        <div class="proj-stack"><span>Python</span><span>FastAPI</span></div>
+        <a href="https://link-project-3.com" class="proj-link" target="_blank" rel="noopener">Lihat Project →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="tag">// 05</div>
+  <h2 class="sec-title">Pengalaman Project</h2>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-period">2025 — Sekarang</div>
+      <div class="exp-main">
+        <span class="exp-badge">Client Project</span>
+        <h4>SIMRS</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Mengembangkan fitur pada sistem informasi rumah sakit (SIMRS) untuk klien menggunakan NestJS (backend) dan Nuxt.js (frontend)</p>
+        <p>• Merancang dan mengelola struktur database sesuai kebutuhan modul yang ditugaskan</p>
+        <p>• Mengimplementasikan API backend serta melakukan pengujian menggunakan Postman</p>
+        <p>• Mengembangkan tampilan frontend dan memastikan integrasi dengan backend berjalan dengan baik</p>
+        <p>• Berkolaborasi dengan tim dalam proses pengembangan dan penyelesaian fitur</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Okt 2025 - Sekarang</div>
+      <div class="exp-main">
+        <span class="exp-badge">Private / Internal</span>
+        <h4>Proyek RSI SIMPEG</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Mengembangkan fitur CRUD data pegawai menggunakan Laravel Livewire</p>
+        <p>• Menerapkan autentikasi dan otorisasi berbasis role (admin & pegawai)</p>
+        <p>• Membuat fitur filter & pencarian data secara real-time</p>
+        <p>• Menangani data kehadiran dan cuti pegawai</p>
+        <p>• Mengintegrasikan komponen Livewire dengan template admin bawaan</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Mei 2025 - Jun 2025</div>
+      <div class="exp-main">
+        <span class="exp-badge">Private / Internal</span>
+        <h4>MASAKTZY</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Merancang arsitektur sistem dan alur kerja aplikasi sebelum pengembangan</p>
+        <p>• Mengembangkan website rekomendasi resep masakan berbasis Laravel</p>
+        <p>• Mengintegrasikan OpenAI API untuk menghasilkan resep berdasarkan bahan, preferensi, dan estimasi waktu masak pengguna</p>
+        <p>• Mengimplementasikan perhitungan nilai gizi per resep</p>
+        <p>• Mengoptimalkan performa query dan respons API agar waktu loading cepat</p>
+        <p>• Menyusun dokumentasi teknis dan laporan proyek</p>
+        <p>• Melakukan uji coba pengguna dan menganalisis hasil survei</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Jan 2025 - Maret 2025</div>
+      <div class="exp-main">
+        <span class="exp-badge">Private / Internal</span>
+        <h4>Proyek RSI SIMPEG</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Mengembangkan fitur CRUD data pegawai menggunakan Laravel Livewire</p>
+        <p>• Menerapkan autentikasi dan otorisasi berbasis role (admin & pegawai)</p>
+        <p>• Membuat fitur filter & pencarian data secara real-time</p>
+        <p>• Menangani data kehadiran dan cuti pegawai</p>
+        <p>• Mengintegrasikan komponen Livewire dengan template admin bawaan</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Feb 2024 - Mei 2024</div>
+      <div class="exp-main">
+        <span class="exp-badge">Private / Internal</span>
+        <h4>Proyek Pengembangan Perangkat Lunak Atma Kitchen</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Membuat rancangan database, use case, dan menentukan kebutuhan fungsional web dan app</p>
+        <p>• Membuat halaman admin (kelola data resep, input jarak pengiriman, konfirmasi pembayaran, update status pesanan dan pembatalan pesanan telat bayar oleh sistem) menggunakan Laravel</p>
+        <p>• Membuat halaman Manager Operasional (kelola data karyawan, kelola presensi karyawan, generate laporan stok bahan baku) menggunakan Flutter dan Laravel</p>
+        <p>• Membuat bagian user (registrasi, kelola profil, menampilkan histori pesanan, konfirmasi pesanan) menggunakan Laravel</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Agu 2023 - Des 2023</div>
+      <div class="exp-main">
+        <span class="exp-badge">Private / Internal</span>
+        <h4>Proyek Atma Hospital</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Turut andil dalam pembuatan design tampilan app menggunakan figma dan implementasikan</p>
+        <p>• Membuat bagiaan user bagian pemesanan dan invoice dapat cetak pdf</p>
+        <p>• Membuat function dimana app dapat scan barcode untuk presensi masuk</p>
+        <p>• Membuat API menggunakan Laravel dan dibuatkan auth service di flutter</p>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-period">Agu 2023 - Des 2023</div>
+      <div class="exp-main">
+        <span class="exp-badge">Private / Internal</span>
+        <h4>Proyek Bioskop Atma</h4>
+        <span class="exp-role">Full-Stack Developer</span>
+        <p>• Turut andil dalam pembuatan front-end website</p>
+        <p>• Membuat bagian login dan register dimana register harus verifikasi email (admin & user)</p>
+        <p>• Membuat halaman admin dimana dapat mengelola film dan voucher</p>
+      </div>
+    </div>
+  </div>
+</section>
+  <div class="contact-panel">
+    <div class="glow glow-mint" style="top:-40px; left:-40px;"></div>
+    <h3>Mari berdiskusi mengenai project Anda 👋</h3>
+    <p>Terbuka untuk freelance, full-time, atau sekadar diskusi seputar tech.</p>
+    <div class="contact-links">
+      <a href="mailto:wijayaamanda1773@gmail.com" class="btn solid">Email Saya</a>
+      <a href="https://github.com/wijayaamanda" class="btn outline">GitHub</a>
+      <a href="www.linkedin.com/in/amanda-wijaya-399ba9281" class="btn outline">LinkedIn</a>
+      <a href="https://wa.me/6285291106993" class="btn outline">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Amanda Ayu Titising Wijaya. Dibuat dengan HTML, CSS, dan sedikit playlist spotify.</footer>
+
+</body>
+</html>
